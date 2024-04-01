@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>basicAuth</module>
+        <module>spring-boot-security</module>
     </modules>
 
     <properties>
