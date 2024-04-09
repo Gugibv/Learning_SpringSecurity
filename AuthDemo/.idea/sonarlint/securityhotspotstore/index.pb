@@ -25,3 +25,7 @@ L
 spring-boot-security/pom.xml,f\2\f2de17c04012e36167c6ff6d482f95c18d08c070
 Ž
 ^spring-boot-security/src/main/java/com/grey/springbootsecurity/controller/LoginController.java,b\3\b34663158b31f503c5978ea6fedc55042ee91e2c
+y
+IbasicAuth/src/main/java/com/grey/basicAuth/config/MyWebAppConfigurer.java,8\8\882aa643618c695c8d68a4fb3d5cc57b4200dcfd
+v
+FbasicAuth/src/main/java/com/grey/basicAuth/config/AuthInterceptor.java,3\9\39da5faaa587db4e5ccbd12cb68b3fa8376e5909
