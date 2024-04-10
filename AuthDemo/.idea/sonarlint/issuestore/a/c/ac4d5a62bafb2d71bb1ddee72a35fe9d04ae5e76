@@ -1,8 +1,0 @@
-
-”	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(äÖ‚$J$63b8ac72-f01e-4c13-8501-c029ef6b6819
-w
-java:S1117?";Rename "allUser" which hides the field declared at line 16.(ë£’ùJ$deb8162c-9b3c-4a73-81a2-9e5377e6036c
-Ž
-java:S6204C"RReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'(†öúšJ$62d3f1f7-42b8-4f55-a4f0-4c0939917106
-
-java:S1155E">Use isEmpty() to check whether the collection is empty or not.(Ñ  œúÿÿÿÿJ$5f205515-98f9-42d6-93ea-428f0856f532

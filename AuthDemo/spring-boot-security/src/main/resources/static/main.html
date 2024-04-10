@@ -6,16 +6,9 @@
     <script src="js/jquery-2.2.3.min.js"></script>
     <script>
         $(document).ready(function () {
-            $.post("/common/getCurrentUser",{
-
-            },function (response) {
+            $.post("/common/getLoginUser",{},function (response) {
                 console.info(response);
-                $("#pageInfo").html("欢迎登录"+response.userName);
-                $("*[auth]").hide();
-                for(resource in response.resourceBeans){
-                    console.info(resource);
-                    $("*[auth='"+response.resourceBeans[resource].resourceName+"']").show();
-                }
+                $("#pageInfo").html("欢迎登录"+response);
             });
         })
         function queryMobile(){
@@ -29,7 +22,7 @@
             })
         }
         function logout(){
-            $.post("/common/logout",function (response) {
+            $.post("/logout",function (response) {
                 location.href="index.html";
             })
         }

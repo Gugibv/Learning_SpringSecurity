@@ -1,10 +1,0 @@
-
-”	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(äÖ‚$J$b62d6629-e779-4691-941c-1aac02367048
-b
-java:S1170"!Make this final field static too.(ãÛŠÖøÿÿÿÿJ$4d539bfd-7c43-4672-ade4-85b645d3fd51
-]
-java:S1170"!Make this final field static too.(¶¹É„J$fcda3fa8-f2df-49b4-8b0c-15c05fc22518
-q
-java:S1068"0Remove this unused "demoUserName" private field.(ãÛŠÖøÿÿÿÿJ$fe1908e1-9e6e-4035-ac76-4b23fdac0824
-l
-java:S1068"0Remove this unused "demoUserPass" private field.(¶¹É„J$faedd383-a9be-4c19-8768-4ea405535ee4
