@@ -25,6 +25,7 @@ public class MyWebSecurityConfig {
                         .requestMatchers("/common/**","/index.html","/css/**","/img/**","/js/**").permitAll() //common下的请求直接通过
                         .anyRequest().authenticated())  //其他请求需要登录
                 .formLogin(form -> form
+                        .loginPage("/index.html").loginProcessingUrl("/login")
                         .defaultSuccessUrl("/main.html")
                         .failureUrl("/common/loginFailed"));//可从默认的login页面登录，并且登录后跳转到main.html
 

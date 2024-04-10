@@ -17,14 +17,12 @@ public class MyWebConfig implements WebMvcConfigurer {
     /**
      * 当项目中涉及大量的页面跳转，我们可以使用addViewControllers方法实现无业务逻辑跳转，从而减少控制器代码的编写。
      *
-     * .setViewName("redirect:/login") 则是跳转到 security 默认的登录页
-     *
      * @param registry ViewControllerRegistry对象，用于注册ViewController
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry)
     {
-        registry.addViewController("/").setViewName("redirect:/index.html");
+        registry.addViewController("/").setViewName("redirect:/login") ;
     }
 
 
