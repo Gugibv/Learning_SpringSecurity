@@ -15,15 +15,16 @@ public class MyWebConfig implements WebMvcConfigurer {
 
 
     /**
-     * 在Spring MVC中注册一个ViewController，将默认的根路径("/")重定向到"/login"路径上。
-     * 这意味着当用户访问根路径时，会被重定向到登录页面，提供了一种简单的方式来设置默认页面跳转。
-     * 这里的"/login"路径通常由Spring Security提供，用于处理登录相关的请求。
+     * 当项目中涉及大量的页面跳转，我们可以使用addViewControllers方法实现无业务逻辑跳转，从而减少控制器代码的编写。
+     *
+     * .setViewName("redirect:/login") 则是跳转到 security 默认的登录页
+     *
      * @param registry ViewControllerRegistry对象，用于注册ViewController
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry)
     {
-        registry.addViewController("/").setViewName("redirect:/login");
+        registry.addViewController("/").setViewName("redirect:/index.html");
     }
 
 

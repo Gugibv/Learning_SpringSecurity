@@ -22,9 +22,9 @@
                 alert("请输入信息");
                 return false;
             }
-            $.post("/common/login",{
-                "userName":$("#userName").val(),
-                "userPass":$("#userPass").val()
+            $.post("/login",{
+                "username":$("#userName").val(),
+                "password":$("#userPass").val()
             },function (response) {
                 if(response){
                     location.href="main.html";
