@@ -11,6 +11,7 @@
     <modules>
         <module>basicAuth</module>
         <module>spring-boot-security</module>
+        <module>spring-boot-security-redis</module>
     </modules>
 
     <properties>
