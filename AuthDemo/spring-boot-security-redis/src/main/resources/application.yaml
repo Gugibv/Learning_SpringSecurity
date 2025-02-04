@@ -1,0 +1,5 @@
+# 配置链接redis的相关信息 -- 采用链接本地的默认方式，则可以省略不配置
+spring:
+  redis:
+    host: localhost
+    port: 6379
