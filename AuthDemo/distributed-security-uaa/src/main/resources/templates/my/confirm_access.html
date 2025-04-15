@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>授权确认</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>需要您的授权</h2>
+<p>应用 <strong th:text="${clientId}"></strong> 请求访问以下权限：</p>
+
+<form th:action="@{/oauth2/authorize}" method="post">
+    <input type="hidden" name="client_id" th:value="${clientId}" />
+    <input type="hidden" name="state" th:value="${state}" />
+    <input type="hidden" name="scope" th:each="scope : ${scopes}" th:value="${scope}" />
+    <input type="hidden" name="redirect_uri" th:value="${redirectUri}" />
+    <input type="hidden" name="response_type" th:value="${responseType}" />
+    <input type="hidden" name="user_oauth_approval" value="true" />
+
+    <ul>
+        <li th:each="scope : ${scopes}" th:text="${scope}"></li>
+    </ul>
+
+    <button type="submit" name="approve" value="true">授权</button>
+    <button type="submit" name="approve" value="false">拒绝</button>
+</form>
+</body>
+</html>
