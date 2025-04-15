@@ -12,6 +12,8 @@
         <module>basicAuth</module>
         <module>spring-boot-security</module>
         <module>spring-boot-security-redis</module>
+        <module>distributed-security-salary</module>
+        <module>distributed-security-uaa</module>
     </modules>
 
     <properties>
