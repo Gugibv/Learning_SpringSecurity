@@ -17,6 +17,11 @@ public class IndexController {
             Model model,
             @RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient authorizedClient,
             @AuthenticationPrincipal OAuth2User oauth2User) {
+
+        String accessToken = authorizedClient.getAccessToken().getTokenValue();
+
+        model.addAttribute("token",accessToken);
+        model.addAttribute("userName", oauth2User.getName());
         model.addAttribute("userName", oauth2User.getName());
         model.addAttribute("clientName", authorizedClient.getClientRegistration().getClientName());
         model.addAttribute("userAttributes", oauth2User.getAttributes());
