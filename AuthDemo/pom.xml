@@ -14,6 +14,7 @@
         <module>spring-boot-security-redis</module>
         <module>distributed-security-salary</module>
         <module>distributed-security-uaa</module>
+        <module>security-github</module>
     </modules>
 
     <properties>
