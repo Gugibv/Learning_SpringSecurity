@@ -24,7 +24,7 @@ public class PasswordTest {
 
     public static void main(String []args){
         String rawPassword = "abc";
-        String encodedPassword = "$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW";
+        String encodedPassword = "$2a$10$gnA/nCo9197iziJvR34HE.EQpw.0iUxYdpyww6J9exRJevAL.tLEe";
         Boolean flag =  BCrypt.checkpw(rawPassword.toString(), encodedPassword);
         System.out.println(flag);
     }
