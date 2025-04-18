@@ -5,7 +5,12 @@ package com.grey.security.demo;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Arrays;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.Assert;
 
 public class PasswordTest {
 
@@ -27,5 +32,12 @@ public class PasswordTest {
         String encodedPassword = "$2a$10$gnA/nCo9197iziJvR34HE.EQpw.0iUxYdpyww6J9exRJevAL.tLEe";
         Boolean flag =  BCrypt.checkpw(rawPassword.toString(), encodedPassword);
         System.out.println(flag);
+
+
+
     }
+
+
+
+
 }
