@@ -1,6 +1,6 @@
 // src/App.js
 import React, { useState } from "react";
-import axios from "axios";
+import api from "./axiosConfig"; // 替换原来的 axios
 
 function App() {
   const [username, setUsername] = useState("");
@@ -11,7 +11,7 @@ function App() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
+      const response = await api.post(
         "http://localhost:8081/login", // spring security login接口
         new URLSearchParams({ username, password }), // 表单格式
         {

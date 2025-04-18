@@ -25,6 +25,9 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                )
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginProcessingUrl("/login")
