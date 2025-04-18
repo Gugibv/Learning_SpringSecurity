@@ -1,18 +1,20 @@
 // src/App.js
 import React, { useState } from "react";
+
+import { useNavigate } from "react-router-dom"; 
 import api from "./axiosConfig"; // 替换原来的 axios
 
-function App() {
+function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
-
+  const navigate = useNavigate(); // ✅ 路由跳转
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await api.post(
-        "http://localhost:8081/login", // spring security login接口
+        "/login", // spring security login接口
         new URLSearchParams({ username, password }), // 表单格式
         {
           headers: {
@@ -23,6 +25,9 @@ function App() {
       );
 
       setMsg("✅ 登录成功！");
+
+    
+      navigate("/home");
     } catch (error) {
       setMsg("❌ 登录失败：" + (error?.response?.status || error.message));
     }
@@ -47,4 +52,4 @@ function App() {
   );
 }
 
-export default App;
+export default LoginPage;

@@ -1,7 +1,7 @@
- import React from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./LoginPage";
-
+import HomePage from "./HomePage";
 
 function App() {
   return (
@@ -9,7 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginPage />} />
-        {/* 你可以在后续加更多页面 */}
+        <Route path="/home" element={<HomePage />} />
       </Routes>
     </Router>
   );
