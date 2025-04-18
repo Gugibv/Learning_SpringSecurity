@@ -16,7 +16,14 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
-                .formLogin(withDefaults())   // 表单登录（默认登录页 /login）
+                .formLogin( form -> {
+                    form
+                            .loginPage("/login").permitAll() //登录页面无需授权即可访问
+                            .usernameParameter("username") //自定义表单用户名参数，默认是username
+                            .passwordParameter("password") //自定义表单密码参数，默认是password
+                            .failureUrl("/login?error") //登录失败的返回地址
+                    ;
+                }) //使用表单授权方式
                 .httpBasic(withDefaults()); // 支持 HTTP Basic 认证
 
         return http.build();
