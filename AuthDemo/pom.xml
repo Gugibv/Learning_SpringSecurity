@@ -15,6 +15,8 @@
         <module>distributed-security-salary</module>
         <module>distributed-security-uaa</module>
         <module>security-github</module>
+        <module>security-connect-integration</module>
+        <module>security-connect-integration</module>
     </modules>
 
     <properties>
