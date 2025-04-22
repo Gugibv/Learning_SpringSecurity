@@ -11,8 +11,10 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.jwt.*;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
 @Configuration
 public class SsoConfig {
 
@@ -21,15 +23,20 @@ public class SsoConfig {
      */
     @Bean
     public JwtEncoder jwtEncoder() throws Exception {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("keys/private-key.pem")) {
+            if (inputStream == null) {
+                throw new FileNotFoundException("Missing keys/private-key.pem in classpath");
+            }
 
-        String pem = Files.readString(Path.of("keys/private-key.pem"));
-        JWK jwk    = JWK.parseFromPEMEncodedObjects(pem);
+            String jwkJson = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            JWK jwk = JWK.parse(jwkJson); // 支持 JWK JSON 格式
 
-        JWKSource<SecurityContext> jwkSource =
-                (selector, ctx) -> selector.select(new JWKSet(jwk));
-
-        return new NimbusJwtEncoder(jwkSource);
+            JWKSource<SecurityContext> source = (selector, ctx) -> selector.select(new JWKSet(jwk));
+            return new NimbusJwtEncoder(source);
+        }
     }
+
+
 
 
     /**
