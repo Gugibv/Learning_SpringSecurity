@@ -1,4 +1,5 @@
-package com.grey.sso.demo.config;
+package com.grey.integration.demo.config;
+
 
 import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.jwk.source.JWKSource;

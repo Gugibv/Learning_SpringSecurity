@@ -1,4 +1,5 @@
-package com.grey.sso.demo.controller;
+package com.grey.integration.demo.controller;
+
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jwt.JWTParser;

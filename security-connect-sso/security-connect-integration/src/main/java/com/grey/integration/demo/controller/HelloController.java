@@ -1,4 +1,5 @@
-package com.grey.sso.demo.controller;
+package com.grey.integration.demo.controller;
+
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,4 +26,3 @@ public class HelloController {
         resp.sendRedirect("/oauth2/authorization/lhubsso");
     }
 }
-

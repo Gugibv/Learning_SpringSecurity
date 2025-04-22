@@ -1,4 +1,4 @@
-package com.grey.sso.demo.controller;
+package com.grey.integration.demo.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
