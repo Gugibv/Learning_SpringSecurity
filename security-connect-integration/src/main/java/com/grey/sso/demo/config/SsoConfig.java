@@ -38,7 +38,6 @@ public class SsoConfig {
 
 
 
-
     /**
      * ② 如果你在后台代码里需要主动拿 token，可注入这个 manager。
      *    对于普通浏览器登录流程，其实不写也没问题。
