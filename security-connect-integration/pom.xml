@@ -15,38 +15,38 @@
     </properties>
 
     <dependencies>
-        <!-- Spring Security + OAuth2 Client -->
+        <!-- Spring Boot Starters (版本统一由 spring-boot-dependencies 管理) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
-            <version>3.4.4</version>
         </dependency>
 
-        <!-- 用于构造和签名 JWT（Client Assertion） -->
-        <dependency>
-            <groupId>com.nimbusds</groupId>
-            <artifactId>oauth2-oidc-sdk</artifactId>
-            <version>11.23.1</version>
-            <scope>runtime</scope>
-        </dependency>
+        <!-- Nimbus JOSE (含 SecurityContext / JWK / JWT 签名) -->
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
             <version>10.2</version>
         </dependency>
 
+        <!-- 可选：如果你确实用到 SDK 里的 PAR / DPoP 等工具，再保留 -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-client</artifactId>
-            <version>3.4.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.4.4</version>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>oauth2-oidc-sdk</artifactId>
+            <version>11.23.1</version>
         </dependency>
 
-
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
+
 
 </project>
