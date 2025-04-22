@@ -10,10 +10,14 @@ import java.io.IOException;
 public class HelloController {
 
     /** ① 试访问就会被 Spring Security 重定向到 /login → SSO */
+    /*
+
     @GetMapping("/")
     public String home() {
         return "Hello, you are authenticated!";
     }
+
+    */
 
     /** ② 直接跳转到 /oauth2/authorization/{registrationId} 也行 */
     @GetMapping("/to-lhubsso")

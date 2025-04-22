@@ -10,7 +10,7 @@ spring:
             client-id: dw-service-dev
             client-authentication-method: private_key_jwt
             authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/lhubsso"  # ← App Login Callback URL
+            redirect-uri: "{baseUrl}/api/sg/wb/v1/common/oidc/callback"
             scope: openid,profile
             provider: lhubsso
         provider:
@@ -28,10 +28,10 @@ app:
       - /
       - /favicon.ico
       - /login
-      - /oauth2/authorization/lhubsso         # App Login URL
-      - /login/oauth2/code/lhubsso            # App Login Callback URL
-      - /sso/front-channel-logout             # Front-Channel Logout
-      - /sso/back-channel-logout              # Back-Channel Logout
+      - /oauth2/authorization/lhubsso         # 登录入口，跳转 SSO
+      - /login/oauth2/code/lhubsso            # 登录回调地址（Spring 自动处理）
+      - /sso/front-channel-logout             # SSO 通过浏览器触发的前端注销
+      - /sso/back-channel-logout              # SO 后台通知式注销接口
 
 logging:
   level:
