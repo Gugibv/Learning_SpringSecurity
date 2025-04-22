@@ -34,6 +34,9 @@ public class CustomOidcCallbackController {
     @Value("${spring.security.oauth2.client.provider.lhubsso.token-uri}")
     private String tokenUri;
 
+    @Value("${spring.security.oauth2.client.registration.lhubsso.redirect-uri}")
+    private String redirectUri;
+
     @PostMapping("/callback")
     public void handleCallback(@RequestParam("code") String code,
                                @RequestParam("state") String state,
@@ -44,7 +47,7 @@ public class CustomOidcCallbackController {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(OAuth2ParameterNames.GRANT_TYPE, "authorization_code");
         params.add(OAuth2ParameterNames.CODE, code);
-        params.add(OAuth2ParameterNames.REDIRECT_URI, "http://localhost:8080/api/sg/wb/v1/common/oidc/callback");
+        params.add(OAuth2ParameterNames.REDIRECT_URI, redirectUri);
         params.add(OAuth2ParameterNames.CLIENT_ID, clientId);
         params.add("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer");
         params.add("client_assertion", generateClientAssertion());
