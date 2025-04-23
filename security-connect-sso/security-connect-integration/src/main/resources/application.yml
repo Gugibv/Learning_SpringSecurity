@@ -7,10 +7,10 @@ spring:
       client:
         registration:
           lhubsso:
-            client-id: dw-service-dev
+            client-id: custom-funding-dev
             client-authentication-method: private_key_jwt
             authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/api/sg/wb/v1/common/oidc/callback"
+            redirect-uri: "https://cls.loc.lhubsg.com:8080/api/sg/wb/v1/common/oidc/callback"
             scope: openid   # openid,profile
             provider: lhubsso
         provider:
