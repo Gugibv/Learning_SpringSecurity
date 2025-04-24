@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jwt.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
@@ -17,37 +18,42 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.interfaces.ECPrivateKey;
 import java.time.Instant;
 import java.util.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/sg/wb/v1/common/oidc")
 public class CustomOidcCallbackController {
 
+    /* ---------- 配置参数 ---------- */
     @Value("${spring.security.oauth2.client.registration.lhubsso.client-id}")
     private String clientId;
 
     @Value("${spring.security.oauth2.client.provider.lhubsso.token-uri}")
     private String tokenUri;
 
+    @Value("${spring.security.oauth2.client.provider.lhubsso.user-info-uri:}")
+    private Optional<String> userInfoUri;   // 可选：若 SSO 提供 userinfo 端点
+
     @Value("${spring.security.oauth2.client.registration.lhubsso.redirect-uri}")
     private String redirectUri;
 
+    /* ---------- OIDC 回调 ---------- */
     @PostMapping("/callback")
     public void handleCallback(@RequestParam(value = "code", required = false) String code,
                                @RequestParam(value = "state", required = false) String state,
-                               HttpServletRequest request,
                                HttpServletResponse response) throws Exception {
-        System.out.println("--------------------------------callback--------------------------------------");
 
         if (code == null || state == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing authorization code or state");
             return;
         }
+        log.info("↪ OIDC callback: code={}, state={}", code, state);
 
+        /* ---------- 1. 换取 Token ---------- */
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(OAuth2ParameterNames.GRANT_TYPE, "authorization_code");
         params.add(OAuth2ParameterNames.CODE, code);
@@ -59,48 +65,53 @@ public class CustomOidcCallbackController {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
+        ResponseEntity<Map> tokenResp = restTemplate.exchange(
+                tokenUri, HttpMethod.POST, new HttpEntity<>(params, headers), Map.class);
 
-        ResponseEntity<Map> tokenResponse = restTemplate.exchange(tokenUri, HttpMethod.POST, entity, Map.class);
-
-        if (!tokenResponse.getStatusCode().is2xxSuccessful()) {
+        if (!tokenResp.getStatusCode().is2xxSuccessful() || tokenResp.getBody() == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token exchange failed");
             return;
         }
+        Map<?,?> body = tokenResp.getBody();
+        String accessToken = (String) body.get("access_token");
+        String idToken     = (String) body.get("id_token");
+        log.debug("access_token={}, id_token(length={})", accessToken != null, idToken != null ? idToken.length() : 0);
 
-        Map<String, Object> body = tokenResponse.getBody();
-        String idToken = (String) body.get("id_token");
-
-        JWT parsedJwt = JWTParser.parse(idToken);
-
-        if (parsedJwt instanceof EncryptedJWT encryptedJWT) {
-            JWEDecrypter decrypter = new ECDHDecrypter(loadPrivateECKey());
-            encryptedJWT.decrypt(decrypter);
-            parsedJwt = encryptedJWT.getPayload().toSignedJWT();
+        /* ---------- 2. 解析 (并可能解密) ID Token ---------- */
+        JWT jwtParsed = JWTParser.parse(idToken);
+        if (jwtParsed instanceof EncryptedJWT enc) {
+            JWEDecrypter dec = new ECDHDecrypter(loadPrivateECKey());
+            enc.decrypt(dec);
+            jwtParsed = enc.getPayload().toSignedJWT();
         }
-
-        if (!(parsedJwt instanceof SignedJWT signedJWT)) {
+        if (!(jwtParsed instanceof SignedJWT signed)) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid ID token");
             return;
         }
+        String username = signed.getJWTClaimsSet().getSubject();
 
-        String username = signedJWT.getJWTClaimsSet().getSubject();
+        /* ---------- 3. 可选：调用 UserInfo 端点取得更多用户信息 ---------- */
+
+        /* ---------- 4. 建立登录会话 ---------- */
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(username, null, List.of());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        /* ---------- 5. 跳转首页 ---------- */
         response.sendRedirect("/");
     }
 
+    /* ---------------------------------------------------------------- */
+    /** 读取本地 EC 私钥（JWK JSON） */
     private ECPrivateKey loadPrivateECKey() throws Exception {
         String json = new String(new ClassPathResource("keys/private-key.pem").getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-        ECKey ecKey = ECKey.parse(json);
-        return ecKey.toECPrivateKey();
+        return ECKey.parse(json).toECPrivateKey();
     }
 
+    /** 生成 client_assertion(JWT) 供私钥jwt认证 */
     private String generateClientAssertion() throws Exception {
         String json = new String(new ClassPathResource("keys/private-key.pem").getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-        JWK jwk = JWK.parse(json);
+        ECKey ecKey = ECKey.parse(json);
 
         Instant now = Instant.now();
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
@@ -113,13 +124,12 @@ public class CustomOidcCallbackController {
                 .build();
 
         JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.ES256)
-                .keyID(jwk.getKeyID())
+                .keyID(ecKey.getKeyID())
                 .type(JOSEObjectType.JWT)
                 .build();
 
-        JWSSigner signer = new ECDSASigner(((ECKey) jwk));
-        SignedJWT jwt = new SignedJWT(header, claims);
-        jwt.sign(signer);
-        return jwt.serialize();
+        SignedJWT signed = new SignedJWT(header, claims);
+        signed.sign(new ECDSASigner(ecKey));
+        return signed.serialize();
     }
 }
