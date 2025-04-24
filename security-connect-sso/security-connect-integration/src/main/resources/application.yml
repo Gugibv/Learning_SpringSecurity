@@ -1,5 +1,10 @@
 server:
-  port: 8080          # 改为 HTTPS 端口，避免与 8080 冲突
+  port: 8080
+  ssl:
+    enabled: true
+    key-store: classpath:ssl/keystore.p12
+    key-store-password: changeit
+    key-store-type: PKCS12
 
 spring:
   security:
