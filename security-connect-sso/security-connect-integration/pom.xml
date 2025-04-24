@@ -33,7 +33,11 @@
         </dependency>
 
 
-
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>1.80</version> <!-- 可换为最新版本 -->
+        </dependency>
 
 
         <!-- Nimbus JOSE (含 SecurityContext / JWK / JWT 签名) -->

@@ -29,16 +29,6 @@ spring:
   application:
     name: security-connect-integration
 
-app:
-  security:
-    whitelist:
-      - /
-      - /favicon.ico
-      - /login
-      - /oauth2/authorization/lhubsso         # 登录入口，跳转 SSO
-      - /login/oauth2/code/lhubsso            # 登录回调地址（Spring 自动处理）
-      - /sso/front-channel-logout             # SSO 通过浏览器触发的前端注销
-      - /sso/back-channel-logout              # SO 后台通知式注销接口
 
 logging:
   level:
