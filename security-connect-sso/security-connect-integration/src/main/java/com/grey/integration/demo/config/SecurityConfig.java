@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
@@ -65,7 +66,9 @@ public class SecurityConfig {
                 .logout(logout -> logout.logoutSuccessUrl("/"))
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(ep -> ep.authorizationRequestResolver(customResolver))
-                );
+                )
+                .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
+
 
         return http.build();
     }
