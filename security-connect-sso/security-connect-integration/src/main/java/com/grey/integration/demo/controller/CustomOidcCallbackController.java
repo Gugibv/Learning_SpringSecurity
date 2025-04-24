@@ -43,6 +43,7 @@ public class CustomOidcCallbackController {
                                @RequestParam("state") String state,
                                HttpServletRequest request,
                                HttpServletResponse response) throws Exception {
+        System.out.println("--------------------------------callback--------------------------------------");
 
         // 1. 构建 Token 请求参数
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
