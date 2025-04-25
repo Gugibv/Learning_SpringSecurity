@@ -99,11 +99,14 @@ public class OidcCallbackController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         /* ---------- 5. 跳转首页 ---------- */
-        Cookie cookie = new Cookie("id_token", idToken);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        String cookieValue = "id_token=" + idToken
+                + "; Path=/"
+                + "; HttpOnly"
+                + "; Secure"
+                + "; Max-Age=3600"
+                + "; SameSite=None";
+
+        response.setHeader("Set-Cookie", cookieValue);
         response.sendRedirect("http://localhost:3000/callback");
 
 

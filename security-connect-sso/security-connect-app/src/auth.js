@@ -6,7 +6,7 @@ axios.defaults.withCredentials = true; // 发送跨域 Cookie
 // 调用后端 /me 接口判断用户是否已登录
 export const isAuthenticated = async () => {
   try {
-    const res = await axios.get("https://cls.loc.lhubsg.com:8080/api/sg/wb/v1/common/me", {
+    const res = await axios.get("https://cls.loc.lhubsg.com:8080/api/sg/wb/v1/common/oidc/me", {
       withCredentials: true,
       validateStatus: (status) => true, // 不抛异常
     });
