@@ -144,9 +144,15 @@ public class OidcCallbackController {
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+
+        log.info("---------------------getCurrentUser-----------------");
+
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+
+
         return ResponseEntity.ok(Map.of("username", authentication.getName()));
     }
 

@@ -14,6 +14,8 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -87,13 +89,23 @@ public class SecurityConfig {
                 .logout(logout -> logout.logoutSuccessUrl("/"))
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(ep -> ep.authorizationRequestResolver(customResolver))
-                        .redirectionEndpoint(redir -> redir.baseUri("/no-match")) // 禁用默认回调
+                        .redirectionEndpoint(redir -> redir.baseUri("/no-match"))
+                        .successHandler(oauth2SuccessHandler())
+                        .failureHandler(oauth2FailureHandler())
                 )
-              //  .csrf(csrf -> csrf.ignoringRequestMatchers("/api/sg/wb/v1/common/oidc/callback"))
+
+                //  .csrf(csrf -> csrf.ignoringRequestMatchers("/api/sg/wb/v1/common/oidc/callback"))
                 .csrf(AbstractHttpConfigurer::disable)
 
 
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(myAuthenticationEntryPoint()))
+                .exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
+                    String uri = request.getRequestURI();
+                    if (uri.startsWith("/api/sg/wb/v1/common/me")) {  // me 接口返回 401，不重定向
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                    } else { //  其他未登录请求跳转到 SSO 登录
+                     //   myAuthenticationEntryPoint().commence(request, response, authException);
+                    }
+                }))
 
                 .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
 
@@ -120,6 +132,28 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
+
+
+    @Bean
+    public AuthenticationSuccessHandler oauth2SuccessHandler() {
+        return (request, response, authentication) -> {
+            // ✅ 登录成功后可设置 Cookie 或跳转前端页面
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"status\":\"success\",\"user\":\"" + authentication.getName() + "\"}");
+            // 也可用：response.sendRedirect("http://localhost:3000/home");
+        };
+    }
+
+    @Bean
+    public AuthenticationFailureHandler oauth2FailureHandler() {
+        return (request, response, exception) -> {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"status\":\"fail\",\"message\":\"" + exception.getMessage() + "\"}");
+        };
+    }
+
+
 
 
 }

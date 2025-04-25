@@ -1,4 +1,3 @@
-// src/PrivateRoute.js  	使用 auth.js 实现路由保护
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { isAuthenticated } from "./auth";
@@ -9,18 +8,21 @@ const PrivateRoute = ({ children }) => {
 
   useEffect(() => {
     const check = async () => {
-      const result = await isAuthenticated();
-      setAuthed(result);
-      setChecking(false);
+      try {
+        const result = await isAuthenticated();
+        setAuthed(result);
+      } finally {
+        setChecking(false); // ✅ 无论如何结束等待
+      }
     };
     check();
   }, []);
 
   if (checking) {
-    return <div style={{ padding: 50 }}>身份校验中...</div>;
+    return <div style={{ padding: 50 }}>⏳ 正在验证登录状态...</div>; // ✅ 不渲染子页面
   }
 
-  return authed ? children : <Navigate to="/" replace />;
+  return authed ? children : <Navigate to="/?reason=loginRequired" replace />;
 };
 
 export default PrivateRoute;

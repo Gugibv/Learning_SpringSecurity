@@ -4,7 +4,7 @@ import React from "react";
 const WelcomePage = () => {
   const handleLogin = () => {
     // 跳转到 SSO 登录页（服务端跳转）
-    window.location.href = "https://localhost:8080/";
+    window.location.href = "https://cls.loc.lhubsg.com:8080/oauth2/authorization/lhubsso";
   };
 
   return (
