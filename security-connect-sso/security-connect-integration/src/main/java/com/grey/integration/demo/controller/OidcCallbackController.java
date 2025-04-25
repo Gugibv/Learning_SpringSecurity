@@ -4,6 +4,7 @@ import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.*;
 import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jwt.*;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +26,7 @@ import java.util.*;
 @Slf4j
 @RestController
 @RequestMapping("/api/sg/wb/v1/common/oidc")
-public class CustomOidcCallbackController {
+public class OidcCallbackController {
 
     /* ---------- 配置参数 ---------- */
     @Value("${spring.security.oauth2.client.registration.lhubsso.client-id}")
@@ -97,7 +98,12 @@ public class CustomOidcCallbackController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         /* ---------- 5. 跳转首页 ---------- */
-        response.sendRedirect("http://localhost:3000/callback?id_token=" + idToken);
+        Cookie cookie = new Cookie("id_token", idToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        response.sendRedirect("http://localhost:3000/home");
 
     }
 

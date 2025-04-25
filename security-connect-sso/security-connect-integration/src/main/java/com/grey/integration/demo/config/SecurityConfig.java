@@ -15,7 +15,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
@@ -103,16 +102,19 @@ public class SecurityConfig {
 
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // 前端地址
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true); // 允许发送 Cookie
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowCredentials(true);
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        config.setMaxAge(3600L);
+        config.setExposedHeaders(List.of("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
-        return source;
+        return new CorsFilter(source);
     }
+
 
 }
