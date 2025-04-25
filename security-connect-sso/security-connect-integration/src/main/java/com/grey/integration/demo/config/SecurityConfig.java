@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
@@ -13,8 +14,13 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Configuration
@@ -74,6 +80,7 @@ public class SecurityConfig {
         };
 
         http
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/favicon.ico", "/api/sg/wb/v1/common/oidc/callback").permitAll()
                         .anyRequest().authenticated()
@@ -83,12 +90,29 @@ public class SecurityConfig {
                         .authorizationEndpoint(ep -> ep.authorizationRequestResolver(customResolver))
                         .redirectionEndpoint(redir -> redir.baseUri("/no-match")) // 禁用默认回调
                 )
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/api/sg/wb/v1/common/oidc/callback")
-                )
+              //  .csrf(csrf -> csrf.ignoringRequestMatchers("/api/sg/wb/v1/common/oidc/callback"))
+                .csrf(AbstractHttpConfigurer::disable)
+
+
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(myAuthenticationEntryPoint()))
+
                 .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
+
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000")); // 前端地址
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true); // 允许发送 Cookie
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
 }

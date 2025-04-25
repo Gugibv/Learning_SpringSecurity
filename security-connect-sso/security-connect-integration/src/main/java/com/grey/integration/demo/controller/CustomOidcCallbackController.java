@@ -4,7 +4,6 @@ import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.*;
 import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jwt.*;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,7 +50,7 @@ public class CustomOidcCallbackController {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing authorization code or state");
             return;
         }
-        log.info("↪ OIDC callback: code={}, state={}", code, state);
+        log.info("-----------------OIDC callback: code={}, state={}-------------------", code, state);
 
         /* ---------- 1. 换取 Token ---------- */
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -75,7 +74,7 @@ public class CustomOidcCallbackController {
         Map<?,?> body = tokenResp.getBody();
         String accessToken = (String) body.get("access_token");
         String idToken     = (String) body.get("id_token");
-        log.debug("access_token={}, id_token(length={})", accessToken != null, idToken != null ? idToken.length() : 0);
+        log.info("----------------access_token={}, id_token(length={})---------------", accessToken != null, idToken != null ? idToken.length() : 0);
 
         /* ---------- 2. 解析 (并可能解密) ID Token ---------- */
         JWT jwtParsed = JWTParser.parse(idToken);
@@ -98,7 +97,8 @@ public class CustomOidcCallbackController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         /* ---------- 5. 跳转首页 ---------- */
-        response.sendRedirect("/");
+        response.sendRedirect("http://localhost:3000/callback?id_token=" + idToken);
+
     }
 
     /* ---------------------------------------------------------------- */
