@@ -5,6 +5,7 @@ import WelcomePage from "./pages/WelcomePage";
 import HomePage from "./pages/HomePage";
 import PrivateRoute from "./PrivateRoute";
 import TestPage from "./pages/TestPage";
+import CallbackPage from "./pages/CallbackPage";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/" element={<WelcomePage />} />
         <Route path="/home" element={<PrivateRoute><HomePage /></PrivateRoute>} />
         <Route path="/test" element={<TestPage />} />
+        <Route path="/callback" element={<CallbackPage />} />
       </Routes>
     </BrowserRouter>
   );

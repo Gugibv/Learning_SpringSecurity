@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.util.LinkedMultiValueMap;
@@ -103,7 +104,8 @@ public class OidcCallbackController {
         cookie.setSecure(true);
         cookie.setPath("/");
         response.addCookie(cookie);
-        response.sendRedirect("http://localhost:3000/home");
+        response.sendRedirect("http://localhost:3000/callback");
+
 
     }
 
@@ -138,4 +140,14 @@ public class OidcCallbackController {
         signed.sign(new ECDSASigner(ecKey));
         return signed.serialize();
     }
+
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(Map.of("username", authentication.getName()));
+    }
+
 }
