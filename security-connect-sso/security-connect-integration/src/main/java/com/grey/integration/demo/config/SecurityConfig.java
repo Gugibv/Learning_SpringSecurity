@@ -88,7 +88,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000",
                 "https://sc.lhubsg.com",
-                "https://cls.loc.lhubsg.com"
+                "https://cls.chd.lhubsg.com"
         ));
 
         config.setAllowCredentials(true);

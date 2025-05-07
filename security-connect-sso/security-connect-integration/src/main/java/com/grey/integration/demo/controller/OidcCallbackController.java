@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
@@ -63,11 +64,19 @@ public class OidcCallbackController {
         params.add("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer");
         params.add("client_assertion", generateClientAssertion());
 
+
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        ResponseEntity<Map> tokenResp = restTemplate.exchange(
-                tokenUri, HttpMethod.POST, new HttpEntity<>(params, headers), Map.class);
+        ResponseEntity<Map> tokenResp ;
+
+        try {
+            tokenResp = restTemplate.exchange(tokenUri, HttpMethod.POST,
+                    new HttpEntity<>(params, headers), Map.class);
+        } catch (HttpClientErrorException ex) {
+            log.error("Token endpoint 400, body={}", ex.getResponseBodyAsString(), ex);
+            throw ex;
+        }
 
         if (!tokenResp.getStatusCode().is2xxSuccessful() || tokenResp.getBody() == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token exchange failed");
@@ -91,6 +100,7 @@ public class OidcCallbackController {
         }
         String username = signed.getJWTClaimsSet().getSubject();
 
+        log.info("username:{}",username);
         /* ---------- 3. 可选：调用 UserInfo 端点取得更多用户信息 ---------- */
 
         /* ---------- 4. 建立登录会话 ---------- */

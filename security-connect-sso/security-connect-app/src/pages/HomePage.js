@@ -6,7 +6,7 @@ const HomePage = () => {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    axios.get("https://cls.loc.lhubsg.com:8080/api/sg/wb/v1/common/oidc/me", {
+    axios.get("https://cls.chd.lhubsg.com:8080/api/sg/wb/v1/common/oidc/me", {
       withCredentials: true
     })
       .then(res => {

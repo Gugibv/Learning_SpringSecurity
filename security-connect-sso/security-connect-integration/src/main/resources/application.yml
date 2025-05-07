@@ -12,10 +12,10 @@ spring:
       client:
         registration:
           lhubsso:
-            client-id: custom-funding-dev
+            client-id: custom-funding-chd
             client-authentication-method: private_key_jwt
             authorization-grant-type: authorization_code
-            redirect-uri: "https://cls.loc.lhubsg.com:8080/api/sg/wb/v1/common/oidc/callback"
+            redirect-uri: "https://cls.chd.lhubsg.com:8080/api/sg/wb/v1/common/oidc/callback"
             scope: openid   # openid,profile
             provider: lhubsso
         provider:
